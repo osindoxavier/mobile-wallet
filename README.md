@@ -22,7 +22,6 @@ Mobile Wallet App is an Android app designed for easy and secure money transfers
 ### Architecture & Libraries
 
 - **Kotlin (JDK 17)**: Project uses Kotlin exclusively, leveraging JDK 17.
-- **Kotlin (JDK 17)**: Project uses Kotlin exclusively, leveraging JDK 17.
 - **Jetpack Compose**: Entirely Compose-based UI, with no usage of Fragments.
 - **Material 3**: Incorporates Material Design 3 and its adaptive components.
 - **MVVM and Clean Architecture**: Organized to maintain separation of concerns, with repositories, use cases, and ViewModels driving the app’s layers.
