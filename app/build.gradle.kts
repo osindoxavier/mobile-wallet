@@ -1,13 +1,19 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.devToolsKsp)
     alias(libs.plugins.daggerHilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.comulynx.wallet.android"
+    val localProperties = Properties()
+    localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
     compileSdk = 34
 
     defaultConfig {
@@ -18,9 +24,31 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled = true
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                type = "String",
+                name = "BASE_URL",
+                value = "\"${localProperties["BASE_URl"]}\""
+            )
+        }
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            buildConfigField(
+                type = "String",
+                name = "BASE_URL",
+                value = "\"${localProperties["BASE_URl"]}\""
+            )
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -38,6 +66,10 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
     packaging {
         resources {
@@ -46,6 +78,7 @@ android {
             merges += "META-INF/LICENSE-notice.md"
         }
     }
+
 }
 
 dependencies {
@@ -59,6 +92,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     //Retrofit
     implementation(libs.bundles.square.retrofit)
+    //gson
+    implementation(libs.gson)
     //Material
     implementation(libs.bundles.material)
     //lifecycle-runtime
@@ -68,13 +103,14 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     //AndroidX UI
     implementation(libs.bundles.androidx.ui)
-
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
     //Local test
     testImplementation(libs.bundles.local.test)
     //Android test
-    androidTestImplementation(libs.bundles.android.test)
+//    androidTestImplementation(libs.bundles.android.test)
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+//    debugImplementation(libs.androidx.ui.tooling)
+//    debugImplementation(libs.androidx.ui.test.manifest)
+//    androidTestImplementation(platform(libs.androidx.compose.bom))
 }
