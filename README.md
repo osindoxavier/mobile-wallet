@@ -66,4 +66,3 @@ practices for a modern, adaptable, and user-friendly experience.
    **Note**: 10.0.2.2 is the default IP for accessing localhost on the Android Emulator. For a
    physical device connected via USB, replace this with your computer’s IP address, e.g., http://<
    YOUR_COMPUTER_IP>:8080.
-3. ****
