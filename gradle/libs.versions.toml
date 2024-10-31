@@ -32,6 +32,7 @@ mockitoKotlinVersion = "5.4.0"
 mockkVersion = "1.13.13"
 gson = "2.11.0"
 okhttp3="4.9.3"
+datastore="1.1.1"
 
 
 [libraries]
@@ -91,6 +92,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 #Gson
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+#datastore
+datastore-preferences= {module="androidx.datastore:datastore-preferences",version.ref="datastore"}
 
 #Test
 #Local test

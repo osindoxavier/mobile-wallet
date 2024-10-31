@@ -105,6 +105,8 @@ dependencies {
     implementation(libs.bundles.androidx.ui)
     //Serialization
     implementation(libs.kotlinx.serialization.json)
+    //DataStore
+    implementation(libs.datastore.preferences)
     //Local test
     testImplementation(libs.bundles.local.test)
     //Android test

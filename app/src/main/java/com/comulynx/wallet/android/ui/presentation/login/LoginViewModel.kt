@@ -6,10 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comulynx.wallet.android.data.mappers.toCustomerEntity
 import com.comulynx.wallet.android.data.model.Resource
+import com.comulynx.wallet.android.data.model.entity.CustomerEntity
 import com.comulynx.wallet.android.data.model.request.SignInRequest
+import com.comulynx.wallet.android.data.repository.CustomerRepository
+import com.comulynx.wallet.android.data.repository.DataStoreRepository
 import com.comulynx.wallet.android.data.validator.AuthenticationValidator
 import com.comulynx.wallet.android.domain.usecase.LoginUseCase
+import com.comulynx.wallet.android.ui.presentation.home.UiSharedFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -21,7 +26,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val validator: AuthenticationValidator
+    private val validator: AuthenticationValidator,
+    private val dataStoreRepository: DataStoreRepository,
+    private val customerRepository: CustomerRepository
 ) : ViewModel() {
 
     private val TAG = "LoginViewModel"
@@ -29,8 +36,8 @@ class LoginViewModel @Inject constructor(
     var state by mutableStateOf(LoginFormState())
         private set
 
-    private val _loginUIState = MutableSharedFlow<LoginUIState>()
-    val loginUIState = _loginUIState.asSharedFlow()
+    private val _uiState = MutableSharedFlow<UiSharedFlow<String>>()
+    val uiState = _uiState.asSharedFlow()
 
 
     fun onEvents(event: LoginEvent) {
@@ -88,17 +95,17 @@ class LoginViewModel @Inject constructor(
             when (resource) {
                 is Resource.Error -> {
                     Log.e(TAG, "loginCustomer: error::${resource.resourceError}")
-                    _loginUIState.emit(
-                        LoginUIState(
-                            errorMassage = resource.resourceError.message
+                    _uiState.emit(
+                        UiSharedFlow(
+                            errorMessage = resource.resourceError.message
                         )
                     )
                 }
 
                 is Resource.Loading -> {
                     Log.d(TAG, "loginCustomer: Loading...")
-                    _loginUIState.emit(
-                        LoginUIState(
+                    _uiState.emit(
+                        UiSharedFlow(
                             isLoading = true
                         )
                     )
@@ -106,12 +113,27 @@ class LoginViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     Log.d(TAG, "loginCustomer: success::")
-                    _loginUIState.emit(
-                        LoginUIState(success = "Login successful")
+                    val customer = resource.data
+                    saveCustomerId(customerId = customer.customerId)
+                    saveUpdateCustomerEntity(entity = customer.toCustomerEntity())
+                    _uiState.emit(
+                        UiSharedFlow(data = "Login successful")
                     )
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun saveCustomerId(customerId: String) {
+        viewModelScope.launch {
+            dataStoreRepository.saveCustomerId(customerId = customerId)
+        }
+    }
+
+    private fun saveUpdateCustomerEntity(entity: CustomerEntity) {
+        viewModelScope.launch {
+            customerRepository.saveUpdateCustomer(entity = entity)
+        }
     }
 
 }
