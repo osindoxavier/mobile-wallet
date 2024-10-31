@@ -2,17 +2,17 @@ package com.comulynx.wallet.android.domain
 
 fun showErrorMessage(errorCode: Int): String {
     return when (errorCode) {
-        400 -> "Bad Request: The server could not understand the request due to invalid syntax."
-        401 -> "Unauthorized: Authentication is required and has failed or has not been provided."
-        403 -> "Forbidden: You do not have permission to access this resource."
-        404 -> "Not Found: The requested resource could not be found on the server."
-        405 -> "Method Not Allowed: The request method is not supported for this resource."
-        409 -> "Conflict: The request could not be completed due to a conflict with the current state of the resource."
-        429 -> "Too Many Requests: You have sent too many requests in a short period."
-        500 -> "Internal Server Error: The server encountered an unexpected condition."
-        502 -> "Bad Gateway: The server received an invalid response from the upstream server."
-        503 -> "Service Unavailable: The server is currently unable to handle the request due to overload or maintenance."
-        504 -> "Gateway Timeout: The server did not receive a timely response."
+        400 -> "There was a problem with your request. Please check and try again."
+        401 -> "Invalid credentials,check your Pin. Please log in and try again."
+        403 -> "You don’t have permission to access this. Contact support if you believe this is a mistake."
+        404 -> "We couldn't find what you were looking for. Please check the address and try again."
+        405 -> "This action isn't allowed. Please try a different option."
+        409 -> "There’s a conflict with the current data. Please refresh and try again."
+        429 -> "You’re doing that too often. Please wait a moment and try again."
+        500 -> "Something went wrong on our end. Please try again later."
+        502 -> "We're having trouble connecting to our servers. Please try again later."
+        503 -> "Our service is temporarily unavailable. Please try again in a few minutes."
+        504 -> "The connection timed out. Please check your internet and try again."
         else -> "An unexpected error occurred. Please try again later."
     }
 }
